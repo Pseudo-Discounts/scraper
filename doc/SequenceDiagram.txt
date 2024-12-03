@@ -1,0 +1,27 @@
+title Scraper
+
+actor Apache Kafka
+participant MessageBrokerService
+participant ScraperPipelineService
+participant ProductWebDataPuller
+participant ProductDetailsScraper
+
+Apache Kafka -> MessageBrokerService: Product link
+activate MessageBrokerService
+
+MessageBrokerService -> ScraperPipelineService: Product link
+activate ScraperPipelineService
+
+ScraperPipelineService -> ProductWebDataPuller: Product link
+activate ProductWebDataPuller
+
+ScraperPipelineService <-- ProductWebDataPuller: Product HTML / JSON
+activate ProductDetailsScraper
+
+ScraperPipelineService -> ProductDetailsScraper: Product HTML / JSON
+
+ScraperPipelineService <-- ProductDetailsScraper: Product details\n(name, price, ...)
+
+MessageBrokerService <-- ScraperPipelineService: Product details\n(name, price, ...)
+
+Apache Kafka <-- MessageBrokerService: Serialized product details
